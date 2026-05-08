@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Guardian AI">
+  <defs>
+    <linearGradient id="guardian-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1d4ed8" />
+      <stop offset="100%" stop-color="#06b6d4" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#081226" />
+  <path d="M32 8L49 15V28C49 39.2 42.1 48.9 32 54C21.9 48.9 15 39.2 15 28V15L32 8Z" fill="url(#guardian-bg)" />
+  <path d="M32 20C27.8 20 24.1 22.3 22 26C24.1 29.7 27.8 32 32 32C36.2 32 39.9 29.7 42 26C39.9 22.3 36.2 20 32 20Z" fill="#e0f2fe" />
+  <circle cx="32" cy="26" r="4.5" fill="#0f172a" />
+  <path d="M24 39C26.2 35.8 28.9 34.2 32 34.2C35.1 34.2 37.8 35.8 40 39" fill="none" stroke="#e0f2fe" stroke-linecap="round" stroke-width="3.2" />
+</svg>
