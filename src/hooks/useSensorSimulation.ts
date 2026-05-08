@@ -87,6 +87,7 @@ export function useSensorSimulation(onThreshold?: (alert: SensorAlert) => void) 
     return o as SensorState;
   });
   const [alerts, setAlerts] = useState<SensorAlert[]>([]);
+  const temperatureBaselineRef = useRef(22);
   const lastValuesRef = useRef<Record<SensorKey, number>>({
     temperature: 22, smoke: 5, co: 2, flood: 0, motion: 0, door: 0,
   });
@@ -131,7 +132,7 @@ export function useSensorSimulation(onThreshold?: (alert: SensorAlert) => void) 
     const id = setInterval(() => {
       const cur = lastValuesRef.current;
       // Temperature and gas values remain flat at baseline and recover slowly after simulated spikes.
-      pushReading("temperature", nextTemperature(cur.temperature));
+      pushReading("temperature", nextTemperature(cur.temperature, temperatureBaselineRef.current));
       pushReading("smoke", recoverToBaseline(cur.smoke, 5, 6, 0));
       pushReading("co", recoverToBaseline(cur.co, 2, 4, 0));
       // Motion auto-clears after one tick; no random firing.
@@ -158,7 +159,13 @@ export function useSensorSimulation(onThreshold?: (alert: SensorAlert) => void) 
     flood: () => pushReading("flood", 1),
     door: () => pushReading("door", lastValuesRef.current.door > 0 ? 0 : 1),
     tempHigh: () => pushReading("temperature", 45),
+    setOutdoorTemperature: (value: number) => {
+      const next = Number(clamp(value, -5, 50).toFixed(1));
+      temperatureBaselineRef.current = next;
+      pushReading("temperature", next);
+    },
     reset: () => {
+      temperatureBaselineRef.current = 22;
       lastValuesRef.current = { temperature: 22, smoke: 5, co: 2, flood: 0, motion: 0, door: 0 };
     },
   };
@@ -170,9 +177,9 @@ export function useSensorSimulation(onThreshold?: (alert: SensorAlert) => void) 
 
 function clamp(v: number, lo: number, hi: number) { return Math.max(lo, Math.min(hi, v)); }
 
-function nextTemperature(current: number) {
-  if (Math.abs(current - 22) < 0.1) return 22;
-  const step = current > 22 ? -0.2 : 0.2;
+function nextTemperature(current: number, baseline: number) {
+  if (Math.abs(current - baseline) < 0.1) return baseline;
+  const step = current > baseline ? -0.2 : 0.2;
   return Number(clamp(current + step, -5, 50).toFixed(1));
 }
 

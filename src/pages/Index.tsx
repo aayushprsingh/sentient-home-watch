@@ -11,7 +11,7 @@ import { useSettings } from "@/hooks/useSettings";
 import { loadSettings, saveSettings } from "@/lib/settings";
 
 interface Geo { city?: string; country?: string; lat?: number; lon?: number; }
-interface WeatherResponse { weather?: { description?: string } }
+interface WeatherResponse { weather?: { description?: string; temp?: number } }
 
 const Index = () => {
   const [tab, setTab] = useState<TabKey>("chat");
@@ -45,8 +45,14 @@ const Index = () => {
   useEffect(() => {
     if (!geo.lat || !geo.lon) return;
     callFn<WeatherResponse>("weather", { lat: geo.lat, lon: geo.lon })
-      .then((d) => setWeatherCondition(d.weather?.description))
+      .then((d) => {
+        setWeatherCondition(d.weather?.description);
+        if (typeof d.weather?.temp === "number") {
+          trigger.setOutdoorTemperature(d.weather.temp);
+        }
+      })
       .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geo.lat, geo.lon]);
 
   const locationLabel = settings.city || (geo.city ? `${geo.city}${geo.country ? ", " + geo.country : ""}` : undefined);
