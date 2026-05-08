@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
     const fwd = req.headers.get("x-forwarded-for") ?? "";
     const ip = fwd.split(",")[0].trim();
 
-    const url = ip ? `http://ip-api.com/json/${ip}` : `http://ip-api.com/json/`;
+    const url = ip ? `https://ip-api.com/json/${ip}` : `https://ip-api.com/json/`;
     const r = await fetch(url);
     const data = await r.json();
     if (data.status !== "success") {
